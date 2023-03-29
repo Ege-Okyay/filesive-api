@@ -22,8 +22,15 @@ const authController = {
       if (password !== confirmPassword) {
         return res.json({ class: 'error', msg: 'Passwords do not match!' });
       }
+      
+      // Check if email is valid
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(email)) {
+        return res.json({ class: 'error', msg: 'Invalid email format!' });
+      }
+
       // Check if email is already in use
-      else if (await prisma.user.findFirst({ where: { email: email } }) !== null) {
+      if (await prisma.user.findFirst({ where: { email: email } }) !== null) {
         return res.json({ class: 'error', msg: 'Email already exists!' });
       }
 
