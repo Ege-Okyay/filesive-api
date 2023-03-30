@@ -1,5 +1,6 @@
 // Development
 import { Request, Response } from "express";
+import validator from 'validator';
 
 // Models
 import prisma from "../models/prisma";
@@ -24,8 +25,7 @@ const authController = {
       }
 
       // Check if email is valid
-      const emailRegex = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
-      if (emailRegex.test(email) === false) {
+      if (!validator.isEmail(email)) {
         return res.json({ class: 'error', msg: 'Invalid email format!' });
       }
       
