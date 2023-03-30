@@ -12,6 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+const validator_1 = __importDefault(require("validator"));
 // Models
 const prisma_1 = __importDefault(require("../models/prisma"));
 // Middleware
@@ -29,8 +30,12 @@ const authController = {
             if (password !== confirmPassword) {
                 return res.json({ class: 'error', msg: 'Passwords do not match!' });
             }
+            // Check if email is valid
+            if (!validator_1.default.isEmail(email)) {
+                return res.json({ class: 'error', msg: 'Invalid email format!' });
+            }
             // Check if email is already in use
-            else if ((yield prisma_1.default.user.findFirst({ where: { email: email } })) !== null) {
+            if ((yield prisma_1.default.user.findFirst({ where: { email: email } })) !== null) {
                 return res.json({ class: 'error', msg: 'Email already exists!' });
             }
             // Hash password and create user in database
